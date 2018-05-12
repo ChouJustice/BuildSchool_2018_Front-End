@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Title</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.9/css/all.css">
+</head>
+
+<body style="text-align:center;">
+    <div class="container">
+        <div class="row mt-5">
+            <div class="col-9 text-center">
+                <h3>貸款試算</h3>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="txtNetIncome" class="col-2 col-form-label text-right">貸款金額</label>
+            <div class="input-group col-6">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                </div>
+                <input type="text" class="form-control" id="money" />
+            </div>
+            <div class="col-1">
+                <button class="btn btn-primary" onclick="Compute()">
+                    <i class="fas fa-calculator"></i>
+                </button>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="txtNetIncome" class="col-2 col-form-label text-right">借貸年期</label>
+            <div class="input-group col-6">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">
+                        <i class=""></i>
+                    </div>
+                </div>
+                <input type="text" class="form-control" id="year" />
+            </div>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="txtTaxRate" class="col-3 col-form-label text-right">年利率</label>
+        <div class="input-group col-5">
+            <input type="text" class="form-control" maxlength="5" id="yearRate" />
+            <div class="input-group-append">
+                <div class="input-group-text">
+                    <i class="fas fa-percent"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <div class="form-group row">
+        <label for="txtTaxAdjustment" class="col-3 col-form-label text-right">每月償還金額</label>
+        <div class="input-group col-5">
+            <div class="input-group-prepend">
+                <div class="input-group-text">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+            </div>
+            <input type="text" class="form-control" readonly id="text1" />
+        </div>
+    </div>
+    </div>
+    <div class="form-group row">
+        <label for="txtTaxAmount" class="col-3 col-form-label text-right">總償還金額</label>
+        <div class="input-group col-5">
+            <div class="input-group-prepend">
+                <div class="input-group-text">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+            </div>
+            <input type="text" class="form-control" readonly id="text2" />
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="txtTaxAmount" class="col-3 col-form-label text-right">每月利息</label>
+        <div class="input-group col-5">
+            <div class="input-group-prepend">
+                <div class="input-group-text">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+            </div>
+            <input type="text" class="form-control" readonly id="text3" />
+        </div>
+    </div>
+    </div>
+    </div>
+
+    <script>
+        var money;
+        var year;
+        var yearRate;
+        function Compute() {
+            money = document.getElementById("money").value;
+            year = document.getElementById("year").value;
+            yearRate = document.getElementById("yearRate").value;
+
+            var data = new LoanCalculator(yearRate, year, money);
+            document.getElementById("text1").value = data.getMonthlyPayAmount();
+            document.getElementById("text2").value = data.getTotalFinalPayAmount();
+            document.getElementById("text3").value = data.getMonthlyPayRateAmount();
+        }
+
+        var LoanCalculator = function (yRate, yLoan, yAmount) {
+            var _mRate = yRate / 12;
+            var _amount = yAmount;
+            var _mLoan = yLoan * 12;
+            var _aRate = ((Math.pow(1 + _mRate, _mLoan)) * _mRate) / ((Math.pow(1 + _mRate, _mLoan)) - 1);
+
+            this.getMonthlyPayAmount = function () {
+                return Math.floor(_amount * _aRate);
+            }
+
+            this.getTotalFinalPayAmount = function () {
+                return Math.floor(this.getMonthlyPayAmount() * _mLoan);
+            }
+
+            this.getMonthlyPayRateAmount = function () {
+                return Math.floor(this.getMonthlyPayAmount() - (_amount / _mLoan));
+            }
+        }
+
+
+
+    </script>
+</body>
+
+</html>

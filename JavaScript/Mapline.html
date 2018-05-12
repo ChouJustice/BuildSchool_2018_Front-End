@@ -1,0 +1,91 @@
+<html>
+
+<body>
+    <div id="map" style="width: 800px; height: 500px"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAYr-pVf6Frs9ZXOhNSFJYzR3j8jrxXfjU"></script>
+    <script>
+        var map;
+        var marker = null;
+        var center = { lat: 24.7571075, lng: 120.952429 };
+        var routes = [];
+        var directionsService = new google.maps.DirectionsService;
+        var directionsDisplay = new google.maps.DirectionsRenderer;
+
+        $(function () {
+
+            map = new google.maps.Map(
+                document.getElementById('map'), {
+                    center: center,
+                    zoom: 13
+                });
+
+            directionsDisplay.setMap(map);
+
+            map.addListener("click", function (e) {
+
+                var marker = new google.maps.Marker({
+                    position: e.latLng,
+                    map: map
+                });
+
+                routes.push({
+                    order: routes.length + 1,
+                    lat: e.latLng.lat(),
+                    lng: e.latLng.lng()
+                });
+
+                routes.sort(function(r1,r2){
+                    return r1.order - r2.order;
+                })
+
+                if (routes.length < 2) return;
+
+                console.log(routes);
+
+                var waypoints = [];
+
+                // create waypoints.
+                for (var route of routes) {
+                    waypoints.push({
+                        location: {
+                            lat: route.lat,
+                            lng: route.lng
+                        },
+                        stopover: true
+                    });
+                }
+
+                var start = {
+                    lat: routes[0].lat,
+                    lng: routes[0].lng
+                };
+                var end = {
+                    lat: routes[routes.length - 1].lat,
+                    lng: routes[routes.length - 1].lng
+                };
+
+                directionsService.route({
+                    origin: start,
+                    destination: end,
+                    waypoints: waypoints,
+                    optimizeWaypoints: true,
+                    travelMode: 'DRIVING'
+                }, function (response, status) {
+                    if (status === 'OK') {
+                        directionsDisplay.setMap(null);
+                        directionsDisplay.setMap(map);
+                        directionsDisplay.setDirections(response);
+                    }
+                });
+
+                //console.log(e.latLng.lat());
+                //console.log(e.latLng.lng());
+            });
+
+        });
+
+    </script>
+</body>
+
+</html>

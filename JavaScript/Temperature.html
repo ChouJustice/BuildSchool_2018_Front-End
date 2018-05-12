@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Title</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+    <style>
+        body {
+            font-family: "微軟正黑體";
+        }
+
+        .form-check-label {
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
+
+        .mybutton button {
+            margin-bottom: 2px;
+        }
+        .form-group *
+        {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row" style="height:400px; background-color:rgba(205, 250, 137, 0.404)">
+            <div class="col-4" style="text-align:center;">
+                <div style="width:80%;height:80%;text-align:center; margin-top:40px;margin-left:10%;">
+                    <div class="form-check" style="border:1px solid #000;">
+                        <p class="form-check-label">
+                            <input style="margin-top:8px" type="radio" class="form-check-input" name="1" id="r1" value="checkedValue" checked> 攝氏轉華氏
+                        </p>
+                        <p class="form-check-label">
+                            <input style="margin-top:8px" type="radio" class="form-check-input" name="1" id="r2" value="checkedValue"> 華氏轉攝氏
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="mybutton" style="margin-top:40px; text-align:center;">
+                    <button type="button" class="btn btn">1</button>
+                    <button type="button" class="btn btn">2</button>
+                    <button type="button" class="btn btn">3</button>
+                    <br>
+                    <button type="button" class="btn btn">4</button>
+                    <button type="button" class="btn btn">5</button>
+                    <button type="button" class="btn btn">6</button>
+                    <br>
+                    <button type="button" class="btn btn">7</button>
+                    <button type="button" class="btn btn">8</button>
+                    <button type="button" class="btn btn">9</button>
+                    <br>
+                    <button style="width:74px;" type="button" class="btn btn">0</button>
+                    <button style="width:35px" type="button" class="btn btn">.</button>
+                    <br>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group" style="margin-top:40px;">
+                    <input type="text" class="form-control" name="" id="input" aria-describedby="helpId" placeholder="請輸入溫度">
+                    <button type="button" class="btn btn-success" onclick="Convert()">轉換</button>
+                    <button type="button" class="btn btn-danger" onclick="Clear()">清除</button>
+                    <input type="text" class="form-control" name="" id="output" aria-describedby="helpId" placeholder="轉換後溫度" readonly>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+
+        var buttons = document.getElementsByTagName("button");
+
+        for(var i=0;i<11;i++)
+        {
+            var button = buttons[i];
+            button.onclick = function()
+            {
+                var btn = event.srcElement;
+                document.getElementById("input").value += btn.innerHTML;
+            }
+        }
+
+        function Clear()
+        {
+            document.getElementById("input").value = "";
+            document.getElementById("output").value = "";
+        }
+        
+        var CtoF = document.getElementById("r1");
+        var FtoC = document.getElementById("r2");
+        function Convert()
+        {
+            var temp = document.getElementById("input").value;
+            var afterConver;
+            if(CtoF.checked == true)
+            {
+                afterConver = ( temp * 1.8 ) + 32;
+            }
+            else
+            {
+                afterConver = ( temp - 32 ) / 1.8;
+            }
+            document.getElementById("output").value = afterConver.toFixed(2);
+        }
+
+        /*
+        var ainput = document.getElementsByTagName("input");
+        ainput[2].value = "36";
+        var temp = ainput[2].value;
+        var tempf = ( parseInt(temp) * 1.8 ) + 32;
+        alert(tempf)
+        */
+    </script>
+</body>
+
+</html>

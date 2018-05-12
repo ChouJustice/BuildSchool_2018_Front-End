@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <title>TrafficMoney</title>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+    crossorigin="anonymous">
+
+  <style>
+    .mapstyle {
+      width: 700px;
+      height: 500px;
+      border: 1px solid #000000;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="map" class="mapstyle">
+    MAP
+  </div>
+  <div id="direction" class="directionstyle"></div>
+  <div id="Mode1"></div>
+  <div id="Mode2"></div>
+  <div id="Mode3"></div>
+
+  <script>
+    var map;
+    var marker = null;
+    var center = { lat: 24.7571075, lng: 120.952429 };
+    var point1 = null, point2 = null;
+    var directionsService = null;
+    var directionsDisplay = null;
+
+    window.onload = function () {
+
+      map = new google.maps.Map(
+        document.getElementById('map'), {
+          center: center,
+          zoom: 15
+        });
+
+      directionsService = new google.maps.DirectionsService();
+      directionsDisplay = new google.maps.DirectionsRenderer();
+      directionsService1 = new google.maps.DirectionsService();
+      directionsDisplay1 = new google.maps.DirectionsRenderer();
+      directionsService2 = new google.maps.DirectionsService();
+      directionsDisplay2 = new google.maps.DirectionsRenderer();
+      directionsDisplay.setMap(map);
+      directionsDisplay1.setMap(map);
+      directionsDisplay2.setMap(map);
+      directionsDisplay.setPanel(document.getElementById('direction'));
+
+      map.addListener("click", function (e) {
+
+        if (point1 != null && point2 != null) {
+          point1 = null;
+          point2 = null;
+        }
+
+        if (point1 == null) {
+          point1 = e.latLng.lat() + ',' + e.latLng.lng();
+          return;
+        }
+        if (point2 == null) {
+          point2 = e.latLng.lat() + ',' + e.latLng.lng();
+        }
+
+        console.log(point1);
+        console.log(point2);
+
+        if (point1 != null && point2 != null) {
+          // calculate direction for 2 points.
+          directionsService.route({ origin: point1, destination: point2, travelMode: 'DRIVING' }, function (response, status) {
+            if (status === 'OK') {
+              console.log(response);
+              directionsDisplay.setDirections(response);
+              var display = document.getElementById("Mode1");
+              var money = 0.0;
+              var distance = 0;
+              var money_distance = 0;
+              for (var item of response.routes[0].legs[0].steps) {
+                if (item.instructions.indexOf('收費') != -1) {
+                  money_distance += parseInt(item.distance.value);
+                }
+                else {
+                  distance += parseInt(item.distance.value);
+                }
+              }
+              money = (5 * Math.round(distance / 1000)) + (6.2 * Math.round(money_distance / 1000));
+              console.log(money);
+              display.innerText = "開車 所需時間 : " + response.routes[0].legs[0].duration.text + " 里程 : " + response.routes[0].legs[0].distance.text + " 段數 : " + response.routes[0].legs[0].steps.length + " 花費金額 : " + money;
+              var during = response.routes[0].legs[0].steps;
+              for (var item of during) {
+
+              }
+            }
+            else {
+              window.alert('Directions request failed dueto ' + status);
+            }
+          });
+          directionsService1.route({ origin: point1, destination: point2, travelMode: 'DRIVING' }, function (response, status) {
+            if (status === 'OK') {
+              console.log(response);
+              directionsDisplay1.setDirections(response);
+              var display = document.getElementById("Mode2");
+              var money = 0.0;
+              var distance = 0;
+              var money_distance = 0;
+              for (var item of response.routes[0].legs[0].steps) 
+              {
+                if (item.instructions.indexOf('收費') != -1) 
+                {
+                  money_distance += parseInt(item.distance.value);
+                }
+                else 
+                {
+                  distance += parseInt(item.distance.value);
+                }
+              }
+              var total = parseInt(response.routes[0].legs[0].distance.value);
+              
+              if(total <= 1500)
+              {
+                money = 85;
+              }
+              else
+              {
+                money = 85 + Math.floor((total - 1500) / 250) * 5
+              }
+              money = money + Math.round(1.2 * money_distance);
+              console.log(money);
+              display.innerText = "計程車 所需時間 : " + response.routes[0].legs[0].duration.text + " 里程 : " + response.routes[0].legs[0].distance.text + " 段數 : " + response.routes[0].legs[0].steps.length + " 花費金額 : " + money;
+              var during = response.routes[0].legs[0].steps;
+            }
+            else {
+              window.alert('Directions request failed dueto ' + status);
+            }
+          });
+          directionsService2.route({ origin: point1, destination: point2, travelMode: 'TRANSIT' }, function (response, status) {
+            if (status === 'OK') {
+              console.log(response);
+              directionsDisplay2.setDirections(response);
+              var display = document.getElementById("Mode3");
+              var money = 0.0;
+              var distance = 0;
+              var money_distance = 0;
+              for (var item of response.routes[0].legs[0].steps) {
+                if (item.instructions.indexOf('收費') != -1) {
+                  money_distance += parseInt(item.distance.value);
+                }
+                else {
+                  distance += parseInt(item.distance.value);
+                }
+              }
+              //money = (5 * Math.round(distance / 1000)) + (6.2 * Math.round(money_distance / 1000));
+              console.log(money);
+              display.innerText = "眾運 所需時間 : " + response.routes[0].legs[0].duration.text + " 里程 : " + response.routes[0].legs[0].distance.text + " 段數 : " + response.routes[0].legs[0].steps.length + " 花費金額 : " + money;
+              var during = response.routes[0].legs[0].steps;
+              for (var item of during) {
+
+              }
+            }
+            else {
+              window.alert('Directions request failed dueto ' + status);
+            }
+          });
+        }
+      });
+    }
+  </script>
+
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAq358DQaLAQLyWShI8wFWAG_KJz9BpMoM&callback=initMap" async
+    defer></script>
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

@@ -1,0 +1,595 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Monthly_Loc</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+
+    <style>
+        .gray {
+            background-color: rgb(119, 119, 119);
+            color: rgb(168, 168, 168);
+        }
+
+        .Days td {
+            width: 14%;
+            height: 160px;
+        }
+
+        .Days td:hover {
+            background-color: #a0ceff;
+        }
+
+        .gray:hover {
+            background-color: rgb(119, 119, 119) !important;
+        }
+
+        td div {
+            text-align: left;
+            height: 80px;
+            font-size: 55%;
+        }
+
+        li .btn {
+            font-size: 80%;
+            padding-top: 0px;
+            padding-bottom: 0px;
+            padding-left: 8px;
+            padding-right: 8px;
+            margin-left: 4px;
+            margin-bottom: 4px;
+        }
+
+        div ul {
+            padding-left: 14px;
+        }
+
+        li span {
+            color: #000;
+        }
+    </style>
+</head>
+
+<body style="font-family:'微軟正黑體';">
+    <div class="container">
+        <div class="row">
+            <div class="col bg-primary" style="height:8px;">
+
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row" style="text-align:center;font-size:20pt;line-height:40pt;height:60px;">
+            <div class="col-2" style="padding:0;">
+                <button id="left" type="button" class="btn btn-primary" style="width:100%;height:100%;border-radius: 0;border:0;" onclick="left()">
+                    <strong style="font-size:200%;">
+                        <</strong>
+                </button>
+            </div>
+            <div class="col-8">
+                <span id="Title">這個月</span>
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#modelId" onclick="InsertValue()">
+                    新增行事曆
+                </button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="modelId" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="input-group mb-3">
+                                    <input id="inputYear" style="text-align:center;" type="text" class="form-control" placeholder="年分" aria-label="Recipient's username"
+                                        aria-describedby="basic-addon2" value="">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text" id="basic-addon2">年</span>
+                                    </div>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <input id="inputMonth" style="text-align:center;" type="text" class="form-control" placeholder="月份" aria-label="Recipient's username"
+                                        aria-describedby="basic-addon2" value="">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text" id="basic-addon2">月</span>
+                                    </div>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <input id="inputDate" style="text-align:center;" type="text" class="form-control" placeholder="日期" aria-label="Recipient's username"
+                                        aria-describedby="basic-addon2" value="">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text" id="basic-addon2">日</span>
+                                    </div>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="inputGroup-sizing-default">代辦事項</span>
+                                    </div>
+                                    <input id="To-Do" style="text-align:center;" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default"
+                                        placeholder="時間 , 事項">
+                                </div>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="inputGroup-sizing-default">標記地點</span>
+                                    </div>
+                                    <input id="inputAddress" style="text-align:center;" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default"
+                                        placeholder="地址">
+                                    <!-- Button trigger modal -->
+                                    <button id="GoogleMap" type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#selectMap">
+                                        Map
+                                    </button>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="inputGroup-sizing-default">標記顏色&nbsp;&nbsp;
+                                            <input id="inputColor" type="color" value="#000000">
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="To_Do_Items()">新增</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modalli -->
+                <div class="modal fade" id="li" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="input-group mb-3">
+                                    <input readonly id="ReadYear" style="text-align:center;" type="text" class="form-control" placeholder="年分" aria-label="Recipient's username"
+                                        aria-describedby="basic-addon2" value="">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text" id="basic-addon2">年</span>
+                                    </div>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <input readonly id="ReadMonth" style="text-align:center;" type="text" class="form-control" placeholder="月份" aria-label="Recipient's username"
+                                        aria-describedby="basic-addon2" value="">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text" id="basic-addon2">月</span>
+                                    </div>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <input readonly id="ReadDate" style="text-align:center;" type="text" class="form-control" placeholder="日期" aria-label="Recipient's username"
+                                        aria-describedby="basic-addon2" value="">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text" id="basic-addon2">日</span>
+                                    </div>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="inputGroup-sizing-default">代辦事項</span>
+                                    </div>
+                                    <input id="ReadTo-Do" style="text-align:center;" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default"
+                                        placeholder="時間 , 事項">
+                                </div>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="inputGroup-sizing-default">標記地點</span>
+                                    </div>
+                                    <input readonly id="ReadAddress" style="text-align:center;" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default"
+                                        placeholder="地點">
+                                </div>
+                                <div class="form-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="inputGroup-sizing-default">標記顏色&nbsp;&nbsp;
+                                            <input id="ReadColor" type="color" value="#000000">
+                                        </span>
+                                    </div>
+                                </div>
+                                <div id="ReadMap" class="" style="height:320px;">
+                                    map
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button name="buttonRe" type="button" class="btn btn-primary" data-dismiss="modal">修改</button>
+                                <button name="buttonDelete" type="button" class="btn btn-danger" data-dismiss="modal">刪除</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ModalMap -->
+                <div class="modal fade" id="selectMap" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div id="inputMap" class="" style="height:320px;">
+                                    map
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button id="ConfirmMap" type="button" class="btn btn-secondary" data-dismiss="modal" onclick="Save_byMap()">確定</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-2" style="padding:0;">
+                <button id="right" type="button" class="btn btn-primary" style="width:100%;height:100%;border-radius: 0;border:0;" onclick="right()">
+                    <strong style="font-size:200%;">></strong>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col bg-primary" style="height:8px;">
+
+            </div>
+        </div>
+    </div>
+    <div class="container" style="padding:0;">
+        <table id="table" class="table table-bordered" style="text-align:center;font-size:150%;">
+            <tr>
+                <th>Mon</th>
+                <th>Tue</th>
+                <th>Wen</th>
+                <th>Thu</th>
+                <th>Fri</th>
+                <th>Sat</th>
+                <th>Sun</th>
+            </tr>
+        </table>
+    </div>
+</body>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDZiYATyKsI4sp_Ghf6TKHUnm03h9deA_4&callback=initMap" async
+    defer></script>
+<script>
+    function initMap() { };
+    var result_inputMap = null;
+
+    function Save_byMap() {
+        if (result_inputMap != null) {
+            document.getElementById("inputAddress").value = result_inputMap;
+        }
+        else {
+            document.getElementById("inputAddress").value = "null";
+        }
+    }
+
+    document.getElementById("GoogleMap").onclick = function () {
+        //console.log("Hi");
+        var map;
+        var marker = null;
+        var center = { lat: 24.7571075, lng: 120.952429 };
+        var directionsService1 = null;
+        var directionsDisplay1 = null;
+        result_inputMap = null;
+
+        //window.onload = function () {
+        map = new google.maps.Map(document.getElementById("inputMap"), { center: center, zoom: 15 });
+        //directionsService1 = new google.maps.DirectionsService();
+        //directionsDisplay1 = new google.maps.DirectionsRenderer();
+        //directionsDisplay1.setMap(map);
+
+        map.addListener('click', function (e) {
+            //console.log(e);
+            var geo = new google.maps.Geocoder();
+
+            geo.geocode({ 'latLng': e.latLng }, function (results, status) {
+                if (status === google.maps.GeocoderStatus.OK) {
+                    // 如果有資料就會回傳
+                    if (results) {
+                        //console.log(results[0].formatted_address);
+                        result_inputMap = results[0].formatted_address;
+
+                        //map.setCenter(e.latLng);
+                        if (marker != null) {
+                            marker.setMap(null);
+                            marker = null;
+                        }
+                        marker = new google.maps.Marker({
+                            position: e.latLng,
+                            map: map,
+                            //icon: '678111-map-marker-64.png',
+                            title: e.latLng.toString()
+                        });
+                    }
+                }
+                // 經緯度資訊錯誤
+                else {
+                    alert("Reverse Geocoding failed because: " + status);
+                }
+            });
+        });
+        //}
+    }
+
+    function InsertValue() {
+        document.getElementById("inputColor").value = "#000000";
+        document.getElementById("inputYear").value = thisYear.toString();
+        document.getElementById("inputMonth").value = (thisMonth + 1).toString();
+        document.getElementById("inputAddress").value = "null"
+    }
+
+    function To_Do_Items() {
+        var Mylist =
+            {
+                key: -1,
+                year: -1,
+                month: -1,
+                day: -1,
+                address: "null",
+                color: "null",
+                items:
+                    [
+
+                    ]
+            };
+        Mylist.year = document.getElementById("inputYear").value;
+        Mylist.month = document.getElementById("inputMonth").value;
+        Mylist.day = document.getElementById("inputDate").value;
+        Mylist.items.push(document.getElementById("To-Do").value);
+        Mylist.address = document.getElementById("inputAddress").value;
+        Mylist.color = document.getElementById("inputColor").value;
+        //console.log(Mylist);
+        if (typeof (Storage) !== "undefined") {
+            //localStorage.setItem("Mylist","test");
+            //localStorage.removeItem("Mylist");
+            //localStorage.clear();
+            var newdate = new Date();
+            var key = newdate.getFullYear().toString() + newdate.getMonth().toString() + newdate.getDate().toString() + newdate.getHours().toString() + newdate.getMinutes().toString() + newdate.getSeconds().toString();
+            //console.log(key);
+            Mylist.key = key.toString();
+            localStorage[key] = JSON.stringify(Mylist);
+            //console.log(localStorage);
+        }
+        AutoRun();
+    }
+
+    thisYear = new Date().getFullYear(); //拿到現在 年
+    thisMonth = new Date().getMonth(); //拿到現在 月
+    //console.log(thisMonth);
+    AutoRun();
+    function left() {
+        if (thisMonth == 0) {
+            thisYear--;
+            thisMonth = 12;
+        }
+        thisMonth = thisMonth - 1;
+        //console.log("thisMonth : " + thisMonth);
+        AutoRun();
+    }
+
+    function right() {
+        if (thisMonth == 12) {
+            thisYear++;
+            thisMonth = -1;
+        }
+        thisMonth = thisMonth + 1;
+        //console.log("thisMonth : " + thisMonth);
+        AutoRun();
+    }
+
+    function AutoRun() {
+        var Title = document.getElementById("Title");
+        var table = document.getElementById("table"); //Get table
+
+        var item = document.getElementsByClassName("Days");
+        for (var i = 0; i < item.length; i++) {
+            item[i].innerHTML = null;
+        }
+
+        var Day_of_Month = new Date(thisYear, thisMonth + 1, 0).getDate(); //拿到當月有幾天(1-31)
+        //console.log(Day_of_Month);
+        Title.innerText = (new Date(thisYear, thisMonth, 1).getFullYear()) + " 年 " + (new Date(thisYear, thisMonth, 1).getMonth() + 1) + " 月 ";
+
+        var row1 = document.createElement("tr");
+        row1.className = "Days";
+
+        var s = new Date(thisYear, thisMonth, 1).getDay(); //取得當月1號星期幾(0-6)
+        //console.log("s : " + s);
+        var k = 1;
+        if (s != 0) {
+            for (var i = 0; i < s - 1; i++) {
+                var div = document.createElement("div");
+                var row1td = document.createElement("td");
+                row1td.innerText = " ";
+                row1td.appendChild(div);
+                row1.appendChild(row1td);
+            }
+            for (var i = s; i <= 7; i++) {
+                var div = document.createElement("div");
+                var row1td = document.createElement("td");
+                var ul = document.createElement("ul");
+                row1td.innerText = k;
+                for (var keyValue in localStorage) {
+                    //console.log(keyValue);
+                    //console.log(thisMonth);
+                    if (isNaN(keyValue)) continue;
+                    if (JSON.parse(localStorage[keyValue]).year == thisYear && JSON.parse(localStorage[keyValue]).month == (thisMonth + 1) && JSON.parse(localStorage[keyValue]).day == k) {
+                        for (var item = 0; item < JSON.parse(localStorage[keyValue]).items.length; item++) {
+                            var li = document.createElement("li");
+                            li.className = keyValue.toString();
+                            li.style = "color:" + JSON.parse(localStorage[keyValue]).color;
+                            li.innerHTML = "<span>" + JSON.parse(localStorage[keyValue]).items[item] + "</span>";
+                            ul.appendChild(li);
+                        }
+                    }
+                }
+                k++;
+                div.appendChild(ul);
+                row1td.appendChild(div);
+                row1.appendChild(row1td);
+            }
+        }
+        else {
+            for (var i = 0; i < 7; i++) {
+                var div = document.createElement("div");
+                var row1td = document.createElement("td");
+                var ul = document.createElement("ul");
+                row1td.innerText = " ";
+                if (i == 6) {
+                    row1td.innerText = k;
+                    for (var keyValue in localStorage) {
+                        //console.log(keyValue);
+                        //console.log(thisMonth);
+                        if (isNaN(keyValue)) continue;
+                        if (JSON.parse(localStorage[keyValue]).year == thisYear && JSON.parse(localStorage[keyValue]).month == (thisMonth + 1) && JSON.parse(localStorage[keyValue]).day == k) {
+                            for (var item = 0; item < JSON.parse(localStorage[keyValue]).items.length; item++) {
+                                var li = document.createElement("li");
+                                li.className = keyValue.toString();
+                                li.style = "color:" + JSON.parse(localStorage[keyValue]).color;
+                                li.innerHTML = "<span>" + JSON.parse(localStorage[keyValue]).items[item] + "</span>";
+                                ul.appendChild(li);
+                            }
+                        }
+                    }
+                    k++;
+                }
+                div.appendChild(ul);
+                row1td.appendChild(div);
+                row1.appendChild(row1td);
+            }
+        }
+        table.appendChild(row1);
+        var more = 1;
+        while (k <= Day_of_Month) {
+            var row = document.createElement("tr");
+            row.className = "Days";
+            for (var i = 0; i < 7; i++) {
+                //console.log("k : " + k);
+                var div = document.createElement("div");
+                var td = document.createElement("td");
+                var ul = document.createElement("ul");
+                td.innerText = k;
+                for (var keyValue in localStorage) {
+                    //console.log(keyValue);
+                    //console.log(thisMonth);
+                    if (isNaN(keyValue)) continue;
+                    if (JSON.parse(localStorage[keyValue]).year == thisYear && JSON.parse(localStorage[keyValue]).month == (thisMonth + 1) && JSON.parse(localStorage[keyValue]).day == k) {
+                        for (var item = 0; item < JSON.parse(localStorage[keyValue]).items.length; item++) {
+                            var li = document.createElement("li");
+                            li.className = keyValue.toString();
+                            li.style = "color:" + JSON.parse(localStorage[keyValue]).color;
+                            li.innerHTML = "<span>" + JSON.parse(localStorage[keyValue]).items[item] + "</span>";
+                            ul.appendChild(li);
+                        }
+                    }
+                }
+                div.appendChild(ul);
+                td.appendChild(div);
+                k++;
+                if (k > Day_of_Month + 1) {
+                    td.className = "gray";
+                    td.innerText = more;
+                    more++;
+                }
+                row.appendChild(td);
+            }
+            table.appendChild(row);
+        }
+        var All_li = document.getElementsByTagName("li");
+
+        for (var item of All_li) {
+            item.innerHTML = "<span>" + JSON.parse(localStorage[item.className]).items[0] + "</span>" + "<button id=" + item.className + " name='libutton'" + " type='button' class='btn btn-primary btn-lg' data-toggle='modal' data-target='#li'>查看</button>";
+
+            var li_buttons = document.getElementsByName("libutton");
+
+            for (var libutton of li_buttons) {
+                libutton.onclick = function () {
+                    //console.log(this.id.toString());
+                    //console.log(localStorage[this.id]);
+                    document.getElementById("ReadYear").value = JSON.parse(localStorage[this.id]).year;
+                    document.getElementById("ReadMonth").value = JSON.parse(localStorage[this.id]).month;
+                    document.getElementById("ReadDate").value = JSON.parse(localStorage[this.id]).day;
+                    document.getElementById("ReadTo-Do").value = JSON.parse(localStorage[this.id]).items[0];
+                    document.getElementById("ReadColor").value = JSON.parse(localStorage[this.id]).color;
+                    document.getElementById("ReadAddress").value = JSON.parse(localStorage[this.id]).address;
+                    document.getElementsByName("buttonRe")[0].id = this.id.toString();
+                    document.getElementsByName("buttonDelete")[0].id = this.id.toString();
+
+                    var Readgeo = new google.maps.Geocoder();
+                    var ReadLatlng = { lat: null, lng: null };
+                    Readgeo.geocode({ 'address': JSON.parse(localStorage[this.id]).address }, function (results, status) {
+                        if (status === google.maps.GeocoderStatus.OK) {
+                            //console.log("Read");
+                            //console.log(results[0]);
+                            ReadLatlng.lat = results[0].geometry.location.lat();
+                            ReadLatlng.lng = results[0].geometry.location.lng();
+                            //console.log(ReadLatlng);
+                            var Readmap = new google.maps.Map(document.getElementById("ReadMap"), { center: ReadLatlng, zoom: 15 });
+                            var ReadMarker = new google.maps.Marker({
+                                position: ReadLatlng,
+                                map: Readmap,
+                                //icon: '678111-map-marker-64.png',
+                            });
+                        }
+                    });
+
+                    document.getElementsByName("buttonDelete")[0].onclick = function () {
+                        //console.log("Delete");
+                        //console.log(this);
+                        //console.log(this.id.toString());
+                        //console.log(localStorage.getItem(this.id.toString()));
+                        localStorage.removeItem(this.id.toString());
+                        AutoRun();
+                    }
+
+                    document.getElementsByName("buttonRe")[0].onclick = function () {
+                        //console.log("Re");
+                        //console.log(this);
+                        //console.log(this.id.toString());
+                        var myData = JSON.parse(localStorage[this.id.toString()]);
+                        //console.log(myData);
+                        myData.items[0] = document.getElementById("ReadTo-Do").value;
+                        myData.color = document.getElementById("ReadColor").value;
+                        localStorage[this.id.toString()] = JSON.stringify(myData);
+                        //JSON.parse(localStorage[this.id.toString()]).items[0] = document.getElementById("ReadTo-Do").value;
+                        AutoRun();
+                    }
+                }
+            }
+
+
+            /*
+            var Btn = document.createElement("button");
+            Btn.className = "btn";
+            Btn.innerText = "x";
+            Btn.onclick = function () {
+                var getkey = item.className;
+                console.log(getkey);
+                for (var line in localStorage) {
+                    if (line == getkey) {
+                        localStorage.removeItem(getkey);
+                        AutoRun();
+                    }
+                }
+            }*/
+            //item.appendChild(Btn);
+        }
+    }
+
+</script>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+
+</html>

@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Mouse</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+
+    <style>
+        td {
+            width: 178px;
+            height: 180px;
+        }
+
+        .mouse {
+            width: inherit;
+            height: inherit;
+            position: relative;
+            background-image: url(./images/grass-upper.png);
+            background-size: 178px, 200px;
+            background-repeat: no-repeat;
+        }
+
+        .mouse::before {
+            top: 39px;
+            left: 26px;
+            position: absolute;
+            width: inherit;
+            height: inherit;
+            content: " ";
+            background-image: url(./images/mole-laugh1.png);
+            background-size: 70%;
+            background-repeat: no-repeat;
+            transition: all 1s;
+        }
+
+        .mouse::after {
+            top: 88px;
+            left: 0;
+            content: " ";
+            position: absolute;
+            width: inherit;
+            height: inherit;
+            background-image: url(./images/grass-lower.png);
+            background-size: 178px, 200px;
+            background-repeat: no-repeat;
+        }
+
+        .mouse.active::before {
+            top: 0px;
+            background-image: url(./images/mole.png);
+            background-size: 70%;
+            background-repeat: no-repeat;
+            content: "";
+            transition: all .3s;
+        }
+
+        .mouse.hit::before {
+            top: 39px;
+            left: 26px;
+            position: absolute;
+            width: inherit;
+            height: inherit;
+            content: " ";
+            background-image: url(./images/mole-thump4.png);
+            background-size: 70%;
+            background-repeat: no-repeat;
+            transition: all .5s;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div style="height:50px;margin-top:10px;" class="row">
+            <div class="col">
+                <button id="start" type="button" class="btn btn-primary">Start</button>
+            </div>
+            <div class="col">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">分數</span>
+                    </div>
+                    <input style="text-align:center" readonly id="scoreLabel" type="text" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1">
+                </div>
+            </div>
+            <div class="col-6">
+                <label id="lifecount" style="background-color:yellow;width:300px;height:37px;margin-top:0px;"><label id="life" style="text-align:center;width:100%;height:100%;background-color:rgb(67, 199, 223)"></label></label>
+            </div>
+        </div>
+        <div style="background-color:#000" class="row">
+            <div class="col-3">
+
+            </div>
+            <div class="col-5">
+                <table>
+                    <tr>
+                        <td>
+                            <div class="mouse">
+
+                            </div>
+                        </td>
+                        <td>
+                            <div class="mouse">
+
+                            </div>
+                        </td>
+                        <td>
+                            <div class="mouse">
+
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="mouse">
+
+                            </div>
+                        </td>
+                        <td>
+                            <div class="mouse">
+
+                            </div>
+                        </td>
+                        <td>
+                            <div class="mouse">
+
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="mouse">
+
+                            </div>
+                        </td>
+                        <td>
+                            <div class="mouse">
+
+                            </div>
+                        </td>
+                        <td>
+                            <div class="mouse">
+
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-4">
+
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <script>
+        $(function () {
+            var score = 0;
+            var life = 100;
+            var speed = 1500;
+
+            $('#start').on('click', function () {
+                Init();
+
+                setInterval(function () {
+                    console.log(speed);
+                    if(life == 0)
+                    {
+                        alert("You Lose~");
+                        return;
+                    }
+                    $All_active = $('.active');
+                    score = score - ($All_active.length * 10);
+                    life = life - $All_active.length;
+                    updateScore();
+                    updateLife();
+                    $All_mouse.removeClass("active");
+                    var next = Math.floor(Math.random() * $All_mouse.length);
+                    $All_mouse.eq(next).addClass("active");
+
+                    setTimeout(function () {
+                        var $All_hit = $(".hit");
+                        $All_hit.removeClass("hit");
+                    }, 200);
+                }, 1500)
+            });
+
+
+            $('body').on('click', ".mouse.active", function () { //打擊時
+                $this = $(this);
+                event.stopPropagation();
+                score += 10;
+                speed -= 10;
+                updateScore();
+                //console.log($this);
+                $this.removeClass("active");
+                $this.addClass("hit");
+            });
+
+            var $All_mouse = $('.mouse');
+            function Init() {
+                score = 0;
+                updateScore();
+                life = 100;
+                updateLife();
+                $All_mouse.removeClass("mouse");
+                $All_mouse.removeClass("active");
+                $All_mouse.removeClass("hit");
+
+                $All_mouse.addClass("mouse");
+            }
+
+            function updateScore() {
+                $('#scoreLabel').val(score);
+            }
+
+            function updateLife() {
+                $('#life').css("width",life+"%");
+                $('#life').text(life);
+            }
+        })
+    </script>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Title</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+    <style>
+        body {
+            font-family: "微軟正黑體";
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row" style="height:400px; background-color:rgba(172, 255, 47, 0.404)">
+            <div class="col-4 bg">
+                <div style="margin-top:40px;">
+                    <button type="button" class="btn btn w-100 p-4" style="font-size:16pt" onclick="Random()">產生亂數</button>
+                    <button type="button" class="btn btn w-100 p-4" style="font-size:16pt;margin-top:10px;" onclick="WatchAns()">觀看答案</button>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group" style="margin-top:40px;">
+                    <input type="text" class="form-control" name="" id="input" aria-describedby="helpId" placeholder="請猜數字">
+                </div>
+                <button type="button" class="btn btn w-100 p-4" style="font-size:16pt" onclick="CheckAns()">猜數字</button>
+            </div>
+            <div class="col-4">
+                <div style="margin-top:40px;">
+                    <ul class="list-group" id="mylist">歷程記錄
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script>
+        var ans = [];
+        var i = 0;
+        function Random() {
+            do {
+                var random = Math.floor(Math.random() * 10);
+                if (ans.indexOf(random.toString()) == -1) {
+                    ans[i] = random.toString();
+                    i++;
+                }
+                else {
+                    continue;
+                }
+            }
+            while (ans.length < 4);
+            console.log(ans);
+        }
+
+        function WatchAns() {
+            alert(ans);
+        }
+
+        function CheckAns() {
+            var input = document.getElementById("input").value;
+
+            var a = 0, b = 0;
+            for (var i = 0; i < ans.length; i++) {
+                if (input.includes(ans[i]) == true) {
+                    b++;
+                }
+            }
+
+            for (var j = 0; j < ans.length; j++) {
+
+                if (ans.indexOf(ans[j]) == input.indexOf(ans[j])) {
+                    b--;
+                    a++;
+                }
+            }
+
+            if(a==4) alert("YOU Win~");
+
+            var list = document.getElementById("mylist");
+            var newLi = document.createElement("li");
+            var newSpan = document.createElement("span");
+            newLi.className = "list-group-item";
+            newLi.innerText = input + "  ";
+            newSpan.className = "badge badge-warning";
+            newSpan.innerText = a + "A" + b + "B";
+            list.appendChild(newLi);
+            newLi.appendChild(newSpan);
+        }
+    </script>
+</body>
+
+</html>
