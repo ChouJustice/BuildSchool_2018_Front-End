@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Marker_with_Circlerange</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+    <meta http-equiv="Access-Control-Allow-Origin" content="http://opendata.hccg.gov.tw/dataset/39ee314b-7ce7-4265-a6b5-b57f42392da8/resource/6a3a5f61-5383-419d-a94c-df710071a51e/download/20180321131425502.json">
+</head>
+
+<body>
+    <div id="map" style="width:700px;height:700px;">
+        Map
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- https://developers.google.com/maps/documentation/javascript/geometry -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBApySzByhMSzsazqYqosYh_i4q5lcwpO8&libraries=geometry"></script>
+
+    <script>
+        var points = [];
+        var markers = [];
+        var circle;
+
+        $(function () {
+            var map;
+            var center = { lat: 24.8052745, lng: 120.9682274 };
+            //console.log(center);
+            var m = google.maps;
+
+            map = new google.maps.Map($('#map')[0], {
+                center: center,
+                zoom: 16
+            });
+
+            $.ajax({
+                url: "http://opendata.hccg.gov.tw/dataset/39ee314b-7ce7-4265-a6b5-b57f42392da8/resource/6a3a5f61-5383-419d-a94c-df710071a51e/download/20180321131425502.json",
+                type: 'GET'
+            }).done(function (hotel) {
+                //console.log(hotel);
+                for (var item of hotel) {
+                    var position = { lat: parseFloat(item.緯度), lng: parseFloat(item.經度) };
+                    points.push({ title: item.旅館名稱, position: position });
+                    // var marker = new google.maps.Marker({
+                    //     position: position,
+                    //     map: map,
+                    //     title: item.旅館名稱,
+                    //     icon: 'image/redSign.png'
+                    // });
+                    // marker.addListener("click", function (e) {
+                    //     var data = { lat: null, lng: null };
+                    //     data.lat = e.latLng.lat();
+                    //     data.lng = e.latLng.lng();
+                    //     //console.log(points);
+                    // });
+                }
+            });
+
+            $.ajax({
+                url: "http://opendata.hccg.gov.tw/dataset/07caf18a-a966-4409-810a-ce3fdb7447b7/resource/3bca2d3b-177c-4e4a-9576-4a3ed8c81612/download/20180307114843661.json",
+                type: 'GET'
+            }).done(function (view) {
+                //console.log(view);
+                for (var item of view) {
+                    var address = item.地址
+                    $.ajax({
+                        url: "https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway/" + address + "CA&key=AIzaSyAYr-pVf6Frs9ZXOhNSFJYzR3j8jrxXfjU",
+                        type: 'GET',
+                        async: false
+                    }).done(function (data) {
+                        //console.log(data);
+                        if (data.status == 'OK') {
+                            points.push({ title: item.景點名稱, position: data.results[0].geometry.location });
+                            //console.log(data.results[0].geometry.location);
+                            // var marker = new google.maps.Marker({
+                            //     position: data.results[0].geometry.location,
+                            //     map: map,
+                            //     title: item.景點名稱,
+                            //     icon: 'image/blueSign.png'
+                            // });
+                            // marker.addListener("click", function (e) {
+                            //     var data = { lat: null, lng: null };
+                            //     data.lat = e.latLng.lat();
+                            //     data.lng = e.latLng.lng();
+                            // });
+                        }
+                    });
+                }
+            });
+
+            $.ajax({
+                url: "http://opendata.hccg.gov.tw/dataset/4e722575-66a2-4af9-b1ff-95c2469331d1/resource/e17629a6-f7fb-4895-9d91-9d8e37d79eae/download/20180307103221255.json",
+                type: 'GET'
+            }).done(function (eat) {
+                //console.log(eat);
+                for (var item of eat) {
+                    var address = item.地址
+                    $.ajax({
+                        url: "https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway/" + address + "CA&key=AIzaSyAYr-pVf6Frs9ZXOhNSFJYzR3j8jrxXfjU",
+                        type: 'GET',
+                        async: false
+                    }).done(function (data) {
+                        //console.log(data);
+                        if (data.status == 'OK') {
+                            points.push({ title: item.店家名稱, position: data.results[0].geometry.location });
+                            //console.log(data.results[0].geometry.location);
+                            // var marker = new google.maps.Marker({
+                            //     position: data.results[0].geometry.location,
+                            //     map: map,
+                            //     title: item.店家名稱,
+                            //     icon: 'image/greenSign.png'
+                            // });
+
+                            // marker.addListener("click", function (e) {
+                            //     var data = { lat: null, lng: null };
+                            //     data.lat = e.latLng.lat();
+                            //     data.lng = e.latLng.lng();
+                            //     //console.log(points);
+                            // });
+                        }
+                    });
+                }
+            });
+
+            console.log(points);
+
+            map.addListener("click", function (e) {
+                CleanMap();
+                var clickCircle = new google.maps.Circle({
+                    map: map,
+                    center: e.latLng,
+                    radius: 200,
+                    fillColor: "yellow",
+                    strokeColor: "#000000",
+                    strokeWeight: 1
+                });
+
+                clickCircle.addListener('click', function (e) {
+                    CleanMap();
+
+                    var clickCircle = new google.maps.Circle({
+                        map: map,
+                        center: e.latLng,
+                        radius: 200,
+                        fillColor: "yellow",
+                        strokeColor: "#000000",
+                        strokeWeight: 1
+                    });
+
+                    circle = clickCircle;
+
+                    var marker = new google.maps.Marker({
+                        position: e.latLng,
+                        map: map,
+                        icon: "https://png.icons8.com/color/64/000000/little-person.png"
+                    });
+                    markers.push(marker);
+                    var clickpoint = { lat: e.latLng.lat(), lng: e.latLng.lng() };
+
+                    for (var i = 0; i < points.length; i++) {
+                        //console.log(clickpoint);
+                        //console.log(marker.getPosition());
+                        //https://stackoverflow.com/questions/36640449/google-maps-api-a-lat-is-not-a-function-error?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
+                        var thislatlng = new google.maps.LatLng(points[i].position);
+
+                        //https://developers.google.com/maps/documentation/javascript/examples/geometry-headings
+                        var distance = google.maps.geometry.spherical.computeDistanceBetween(marker.getPosition(), thislatlng);
+                        //console.log(distance);
+                        if (distance < 200) {
+                            var Rangemarker = new google.maps.Marker({
+                                position: thislatlng,
+                                map: map,
+                                title: points[i].title
+                            });
+                            markers.push(Rangemarker);
+                        }
+                    }
+                });
+
+                circle = clickCircle;
+
+                var marker = new google.maps.Marker({
+                    position: e.latLng,
+                    map: map,
+                    icon: "https://png.icons8.com/color/64/000000/little-person.png"
+                });
+                markers.push(marker);
+                var clickpoint = { lat: e.latLng.lat(), lng: e.latLng.lng() };
+
+                for (var i = 0; i < points.length; i++) {
+                    //console.log(clickpoint);
+                    //console.log(marker.getPosition());
+                    //https://stackoverflow.com/questions/36640449/google-maps-api-a-lat-is-not-a-function-error?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
+                    var thislatlng = new google.maps.LatLng(points[i].position);
+
+                    //https://developers.google.com/maps/documentation/javascript/examples/geometry-headings
+                    var distance = google.maps.geometry.spherical.computeDistanceBetween(marker.getPosition(), thislatlng);
+                    //console.log(distance);
+                    if (distance < 200) {
+                        var Rangemarker = new google.maps.Marker({
+                            position: thislatlng,
+                            map: map,
+                            title: points[i].title
+                        });
+                        markers.push(Rangemarker);
+                    }
+                }
+            });
+        });
+
+        function CleanMap() {
+            for (var i = 0; i < markers.length; i++) {
+                markers[i].setMap(null);
+            }
+
+            if (circle != null) {
+                circle.setMap(null);
+            }
+
+            markers = [];
+
+            circle = null;
+        }
+    </script>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
